@@ -52,19 +52,19 @@
 
         <a class="{{ active_status }}" href="{{ url }}" {%- if html_page.external_url and site.open_new_tab -%} {%- endif -%} >{{ html_page.title }}</a>
         <a id="loginNavItem" class="nav-link" onclick="loginWithEpic()">Login</a>
-<div id="dropdownMenu" class="dropdown" style="display: none;">
-    <button class="btn dropdown-toggle" id="loggedInMessage" type="button" data-toggle="dropdown" aria-expanded="false">
-        EpicId
-    </button>
-    <div class="dropdown-menu">
-        <!-- Hier kannst du Links oder Inhalte für das Dropdown-Menü hinzufügen -->
-        <a class="dropdown-item" href="/battle-royale/">Account</a>
-        <a class="dropdown-item" href="/create/" onclick="logout()">Logout</a>
+    <div id="dropdownMenu" class="dropdown" style="display: none;">
+        <button class="btn dropdown-toggle" id="loggedInMessage" type="button" data-toggle="dropdown" aria-expanded="false">
+            EpicId
+        </button>
+        <div class="dropdown-menu">
+            <!-- Hier kannst du Links oder Inhalte für das Dropdown-Menü hinzufügen -->
+            <a class="dropdown-item" href="/battle-royale/">Account</a>
+            <a class="dropdown-item" href="/create/" onclick="logout()">Logout</a>
+        </div>
     </div>
-</div>
-
       {% endfor %}
 </nav>
+
 <script>
     function loginWithEpic() {
         // Redirect the user to the Epic Games login page
@@ -152,4 +152,3 @@
         }
     });
 </script>
-    </script>
