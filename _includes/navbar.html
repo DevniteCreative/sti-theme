@@ -61,6 +61,18 @@
             window.location.href = `https://www.epicgames.com/id/authorize?client_id=xyza7891D9UWmFmhLv4Qyprz2w9AQiof&redirect_uri=${window.location.href}&response_type=code&scope=basic_profile`;
         }
 
+        function checkAndLogin() {
+            // Check if user is already logged in
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                // If not logged in, execute loginWithEpic
+                loginWithEpic();
+            } else {
+                // Optionally, provide some feedback that user is already logged in
+                console.log("User is already logged in");
+            }
+        }
+
         // Function to decode the JWT token and display the displayName
         function decodeToken(token) {
             try {
