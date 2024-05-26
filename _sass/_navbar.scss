@@ -75,16 +75,6 @@ padding: 6px;
 text-decoration: none;
     }
 
-    text:hover,
-text::after
-/* Weitere spezielle Zustände hier, falls nötig */
-{
-    /* Überschreibe oder entferne die Stile für diese speziellen Links */
-    color: #fff;
-    height: 0 !important;
-    animation: none !important;
-}
-
 
 .btn.dropdown-toggle {
     font-size: 11px;
