@@ -101,12 +101,12 @@
             if (accessToken) {
                 // User is logged in
                 decodeToken(accessToken);
-              document.getElementById("loggedInMessage").href = "https://www.epicgames.com/account/";
+              document.getElementById("loggedInMessage").setAttribute("onClick", "");
                 return true;
             } else {
                 // User is not logged in
                 document.getElementById("loggedInMessage").innerText = "LOGIN";
-              document.getElementById("loggedInMessage").href = "#";
+              document.getElementById("loggedInMessage").setAttribute("onClick", "loginWithEpic()");
                 return false;
             }
         }
