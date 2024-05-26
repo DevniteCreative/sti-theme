@@ -66,7 +66,7 @@
           text-decoration: none;
     animation: slideOutBar 0.3s forwards;
   }
-  nav a.text{
+  text{
     font-size: 16px;
     font-weight: 700;
     line-height: 40px;
@@ -75,8 +75,8 @@ padding: 6px;
 text-decoration: none;
     }
 
-    nav a.text:hover,
-nav a.text::after
+    text:hover,
+text::after
 /* Weitere spezielle Zustände hier, falls nötig */
 {
     /* Überschreibe oder entferne die Stile für diese speziellen Links */
