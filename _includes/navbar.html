@@ -51,7 +51,7 @@
         {%- endif -%}
 
         <a class="{{ active_status }}" href="{{ url }}" {%- if html_page.external_url and site.open_new_tab -%} {%- endif -%} >{{ html_page.title }}</a>      {% endfor %}
-        <a id="loggedInMessage" onclick="loginWithEpic()">Login</a>
+        <a id="loggedInMessage" href="#" onclick="loginWithEpic()">Login</a>
 
 </nav>
 
