@@ -51,95 +51,105 @@
         {%- endif -%}
 
         <a class="{{ active_status }}" href="{{ url }}" {%- if html_page.external_url and site.open_new_tab -%} {%- endif -%} >{{ html_page.title }}</a>
-        <a class="nav-link" onclick="loginWithEpic()">Login</a>
-  <div class="dropdown">
-<button class="btn dropdown-toggle" id="loggedInMessage" type="button" data-toggle="dropdown" aria-expanded="false">
-      EpicId
+        <a id="loginNavItem" class="nav-link" onclick="loginWithEpic()">Login</a>
+<div id="dropdownMenu" class="dropdown" style="display: none;">
+    <button class="btn dropdown-toggle" id="loggedInMessage" type="button" data-toggle="dropdown" aria-expanded="false">
+        EpicId
     </button>
     <div class="dropdown-menu">
-      <!-- Hier kannst du Links oder Inhalte für das Dropdown-Menü hinzufügen -->
-      <a class="dropdown-item" href="/battle-royale/">Account</a>
-      <a class="dropdown-item" href="/create/">Logout</a>
-    </div></div>
+        <!-- Hier kannst du Links oder Inhalte für das Dropdown-Menü hinzufügen -->
+        <a class="dropdown-item" href="/battle-royale/">Account</a>
+        <a class="dropdown-item" href="/create/" onclick="logout()">Logout</a>
+    </div>
+</div>
 
       {% endfor %}
 </nav>
 <script>
-        function loginWithEpic() {
-            // Redirect the user to the Epic Games login page
-            window.location.href = `https://www.epicgames.com/id/authorize?client_id=xyza7891D9UWmFmhLv4Qyprz2w9AQiof&redirect_uri=${window.location.href}&response_type=code&scope=basic_profile`;
+    function loginWithEpic() {
+        // Redirect the user to the Epic Games login page
+        window.location.href = `https://www.epicgames.com/id/authorize?client_id=xyza7891D9UWmFmhLv4Qyprz2w9AQiof&redirect_uri=${window.location.href}&response_type=code&scope=basic_profile`;
+    }
+
+    // Function to decode the JWT token and display the displayName
+    function decodeToken(token) {
+        try {
+            // Decode the payload of the token
+            const payload = JSON.parse(atob(token.split('.')[1]));
+
+            // Extract the displayName from the payload
+            const displayName = payload.dn;
+
+            // Update the button text to display the displayName
+            document.getElementById("loggedInMessage").innerText = displayName;
+        } catch (e) {
+            console.error("Failed to decode token:", e);
+            logout();
         }
+    }
 
-        // Function to decode the JWT token and display the displayName
-        function decodeToken(token) {
-            try {
-                // Decode the payload of the token
-                const payload = JSON.parse(atob(token.split('.')[1]));
+    // Function to save the access token in localStorage
+    function saveAccessToken(accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+    }
 
-                // Extract the displayName from the payload
-                const displayName = payload.dn;
-
-                // Update the button text to display the displayName
-                document.getElementById("loggedInMessage").innerText = displayName;
-            } catch (e) {
-                console.error("Failed to decode token:", e);
-                logout();
-            }
+    // Function to check login status based on the access token in localStorage
+    function checkLoginStatus() {
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+            // User is logged in
+            decodeToken(accessToken);
+            document.getElementById("loginNavItem").style.display = 'none';
+            document.getElementById("dropdownMenu").style.display = 'block';
+            return true;
+        } else {
+            // User is not logged in
+            document.getElementById("loginNavItem").style.display = 'block';
+            document.getElementById("dropdownMenu").style.display = 'none';
+            return false;
         }
+    }
 
-        // Function to save the access token in localStorage
-        function saveAccessToken(accessToken) {
-            localStorage.setItem('accessToken', accessToken);
-        }
+    // Function to log out and remove the access token from localStorage
+    function logout() {
+        localStorage.removeItem('accessToken');
+        // Additional actions for logging out, e.g., redirect to a logout page
+        document.getElementById("loginNavItem").style.display = 'block';
+        document.getElementById("dropdownMenu").style.display = 'none';
+    }
 
-        // Function to check login status based on the access token in localStorage
-        function checkLoginStatus() {
-            const accessToken = localStorage.getItem('accessToken');
-            if (accessToken) {
-                // User is logged in
-                decodeToken(accessToken);
-                return true;
-            } else {
-                // User is not logged in
-                document.getElementById("loggedInMessage").innerText = "LOGIN";
-                return false;
-            }
-        }
+    // Example usage
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
 
-        // Function to log out and remove the access token from localStorage
-        function logout() {
-            localStorage.removeItem('accessToken');
-            // Additional actions for logging out, e.g., redirect to a logout page
-        }
-
-        // Example usage
-        document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-                // Make a request to the token endpoint to exchange the code for an access token
-                fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.epicgames.dev/epic/oauth/v2/token'), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Basic eHl6YTc4OTFEOVVXbUZtaEx2NFF5cHJ6Mnc5QVFpb2Y6RUNSSzhFTS9vbWRoUnlmK1dhNklqTGVOZHZVSE5rYTY3RHNuM1FuMEw0QQ==' // Replace with your client credentials
-                    },
-                    body: 'deployment_id=864f12bc0bdf472ea2a8c7c4b1485c25&grant_type=authorization_code&code=' + code
+        if (code) {
+            // Make a request to the token endpoint to exchange the code for an access token
+            fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.epicgames.dev/epic/oauth/v2/token'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic eHl6YTc4OTFEOVVXbUZtaEx2NFF5cHJ6Mnc5QVFpb2Y6RUNSSzhFTS9vbWRoUnlmK1dhNklqTGVOZHZVSE5rYTY3RHNuM1FuMEw0QQ==' // Replace with your client credentials
+                },
+                body: 'deployment_id=864f12bc0bdf472ea2a8c7c4b1485c25&grant_type=authorization_code&code=' + code
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Extract the access token from the response
+                    const accessToken = data.access_token;
+                    // Save the access token to localStorage
+                    saveAccessToken(accessToken);
+                    // Decode the access token and display the displayName
+                    decodeToken(accessToken);
+                    // Update visibility based on login status
+                    document.getElementById("loginNavItem").style.display = 'none';
+                    document.getElementById("dropdownMenu").style.display = 'block';
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Extract the access token from the response
-                        const accessToken = data.access_token;
-                        // Save the access token to localStorage
-                        saveAccessToken(accessToken);
-                        // Decode the access token and display the displayName
-                        decodeToken(accessToken);
-                    })
-                    .catch(error => console.error('Error:', error));
-            } else {
-                // Check login status if there is no authorization code
-                checkLoginStatus();
-            }
-        });
+                .catch(error => console.error('Error:', error));
+        } else {
+            // Check login status if there is no authorization code
+            checkLoginStatus();
+        }
+    });
+</script>
     </script>
